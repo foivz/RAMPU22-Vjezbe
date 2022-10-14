@@ -11,7 +11,7 @@ class MainPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
 
     data class FragmentItem(val titleRes: Int, val iconRes: Int, val fragmentClass: KClass<*>)
 
-    private val fragmentItems = ArrayList<FragmentItem>()
+    val fragmentItems = ArrayList<FragmentItem>()
 
     fun addFragment(fragment: FragmentItem) {
         fragmentItems.add(fragment)
