@@ -4,11 +4,11 @@ import hr.foi.rampu.memento.entities.Task
 import hr.foi.rampu.memento.entities.TaskCategory
 import java.util.*
 
-class MockDataLoader {
+object MockDataLoader {
     fun getDemoData(): List<Task> = listOf(
         Task("Submit seminar paper", Date(), TaskCategory("RAMPU", "#000080"), false),
         Task("Prepare for exercises", Date(), TaskCategory("RPP", "#FF0000"), false),
         Task("Rally a project team", Date(), TaskCategory("RAMPU", "#000080"), false),
-        Task("Make up a project idea", Date(), TaskCategory("RWA", "#CCCCCC"), false)
+        Task("Work on 1st homework", Date(), TaskCategory("RWA", "#CCCCCC"), false)
     )
 }
