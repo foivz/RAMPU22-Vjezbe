@@ -1,5 +1,6 @@
 package hr.foi.rampu.memento.adapters
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -9,7 +10,7 @@ import hr.foi.rampu.memento.entities.Task
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TasksAdapter : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+class TasksAdapter(private val tasksList: List<Task>) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
     inner class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val sdf: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.ENGLISH)
 
@@ -28,14 +29,13 @@ class TasksAdapter : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        TODO("Not yet implemented")
+        val taskView = LayoutInflater.from(parent.context).inflate(R.layout.task_list_item, parent, false)
+        return TaskViewHolder(taskView)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        TODO("Not yet implemented")
+        holder.bind(tasksList[position])
     }
 
-    override fun getItemCount(): Int {
-        TODO("Not yet implemented")
-    }
+    override fun getItemCount() = tasksList.size
 }
