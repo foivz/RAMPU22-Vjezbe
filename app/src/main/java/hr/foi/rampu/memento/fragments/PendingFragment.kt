@@ -44,5 +44,6 @@ class PendingFragment : Fragment() {
 
         val dialogHelper = NewTaskDialogHelper(newTaskDialogView)
         dialogHelper.populateSpinner(MockDataLoader.getDemoCategories())
+        dialogHelper.activateDateTimeListeners()
     }
 }
