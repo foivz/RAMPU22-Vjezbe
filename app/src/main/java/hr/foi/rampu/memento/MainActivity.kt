@@ -2,7 +2,9 @@ package hr.foi.rampu.memento
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import hr.foi.rampu.memento.adapters.MainPagerAdapter
@@ -14,6 +16,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var tabLayout: TabLayout
     lateinit var viewPager2: ViewPager2
+    lateinit var navDrawerLayout: DrawerLayout
+    lateinit var navView: NavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,6 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         tabLayout = findViewById(R.id.tabs)
         viewPager2 = findViewById(R.id.viewpager)
+        navDrawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
 
         val mainPagerAdapter = MainPagerAdapter(supportFragmentManager, lifecycle)
 
@@ -52,5 +58,15 @@ class MainActivity : AppCompatActivity() {
             tab.setText(mainPagerAdapter.fragmentItems[position].titleRes)
             tab.setIcon(mainPagerAdapter.fragmentItems[position].iconRes)
         }.attach()
+
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.title) {
+                getString(R.string.tasks_pending) -> viewPager2.setCurrentItem(0, true)
+                getString(R.string.tasks_completed) -> viewPager2.setCurrentItem(1, true)
+                getString(R.string.news) -> viewPager2.setCurrentItem(2, true)
+            }
+            navDrawerLayout.closeDrawers()
+            return@setNavigationItemSelectedListener true
+        }
     }
 }
