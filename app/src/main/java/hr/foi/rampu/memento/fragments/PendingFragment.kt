@@ -36,13 +36,17 @@ class PendingFragment : Fragment() {
 
     private fun showDialog() {
         val newTaskDialogView = LayoutInflater.from(context).inflate(R.layout.new_task_dialog, null)
+        val dialogHelper = NewTaskDialogHelper(newTaskDialogView)
 
         AlertDialog.Builder(context)
             .setView(newTaskDialogView)
             .setTitle(getString(R.string.create_a_new_task))
+            .setPositiveButton(getString(R.string.create_a_new_task)) { _, _ ->
+                val newTask = dialogHelper.buildTask()
+                // TODO: Show new task in RecyclerView
+            }
             .show()
 
-        val dialogHelper = NewTaskDialogHelper(newTaskDialogView)
         dialogHelper.populateSpinner(MockDataLoader.getDemoCategories())
         dialogHelper.activateDateTimeListeners()
     }

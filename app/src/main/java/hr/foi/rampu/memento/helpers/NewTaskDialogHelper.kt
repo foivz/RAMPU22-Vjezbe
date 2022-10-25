@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.Spinner
 import hr.foi.rampu.memento.R
+import hr.foi.rampu.memento.entities.Task
 import hr.foi.rampu.memento.entities.TaskCategory
 import java.text.SimpleDateFormat
 import java.util.*
@@ -59,5 +60,14 @@ class NewTaskDialogHelper(private val view: View) {
                 view.clearFocus()
             }
         }
+    }
+
+    fun buildTask(): Task {
+        val etName = view.findViewById<EditText>(R.id.et_new_task_dialog_name)
+        val newTaskName = etName.text.toString()
+        val spinnerCategory = view.findViewById<Spinner>(R.id.spn_new_task_dialog_category)
+        val selectedCategory = spinnerCategory.selectedItem as TaskCategory
+
+        return Task(newTaskName, selectedDateTime.time, selectedCategory, false)
     }
 }
