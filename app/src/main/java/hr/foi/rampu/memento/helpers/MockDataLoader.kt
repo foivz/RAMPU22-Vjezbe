@@ -5,10 +5,10 @@ import hr.foi.rampu.memento.entities.TaskCategory
 import java.util.*
 
 object MockDataLoader {
-    fun getDemoData(): List<Task> {
+    fun getDemoData(): MutableList<Task> {
         val categories = getDemoCategories()
 
-        return listOf(
+        return mutableListOf(
             Task("Submit seminar paper", Date(), categories[0], false),
             Task("Prepare for exercises", Date(), categories[1], false),
             Task("Rally a project team", Date(), categories[0], false),
