@@ -59,14 +59,17 @@ class MainActivity : AppCompatActivity() {
             tab.setIcon(mainPagerAdapter.fragmentItems[position].iconRes)
         }.attach()
 
-        navView.setNavigationItemSelectedListener { menuItem ->
-            when (menuItem.title) {
-                getString(R.string.tasks_pending) -> viewPager2.setCurrentItem(0, true)
-                getString(R.string.tasks_completed) -> viewPager2.setCurrentItem(1, true)
-                getString(R.string.news) -> viewPager2.setCurrentItem(2, true)
-            }
-            navDrawerLayout.closeDrawers()
-            return@setNavigationItemSelectedListener true
+        mainPagerAdapter.fragmentItems.withIndex().forEach { (index, fragmentItem) ->
+            navView.menu
+                .add(fragmentItem.titleRes)
+                .setIcon(fragmentItem.iconRes)
+                .setCheckable(true)
+                .setChecked((index == 0))
+                .setOnMenuItemClickListener {
+                    viewPager2.setCurrentItem(index, true)
+                    navDrawerLayout.closeDrawers()
+                    return@setOnMenuItemClickListener true
+                }
         }
     }
 }
