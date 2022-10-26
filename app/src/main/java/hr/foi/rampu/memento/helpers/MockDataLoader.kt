@@ -6,13 +6,11 @@ import java.util.*
 
 object MockDataLoader {
     fun getDemoData(): MutableList<Task> {
-        val categories = getDemoCategories()
-
         return mutableListOf(
-            Task("Submit seminar paper", Date(), categories[0], false),
-            Task("Prepare for exercises", Date(), categories[1], false),
-            Task("Rally a project team", Date(), categories[0], false),
-            Task("Work on 1st homework", Date(), categories[2], false)
+            Task(0, "Submit seminar paper", Date(), 0, false),
+            Task(1, "Prepare for exercises", Date(), 1, false),
+            Task(2, "Rally a project team", Date(), 0, false),
+            Task(3, "Work on 1st homework", Date(), 2, false)
         )
     }
 

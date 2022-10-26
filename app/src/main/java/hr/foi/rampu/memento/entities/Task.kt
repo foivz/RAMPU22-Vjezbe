@@ -1,10 +1,24 @@
 package hr.foi.rampu.memento.entities
 
+import androidx.room.*
 import java.util.*
 
-data class Task(
-    val name: String,
-    val dueDate: Date,
-    val category: TaskCategory,
-    val completed: Boolean
+@Entity(
+    tableName = "tasks",
+    foreignKeys = [ForeignKey(
+        entity = TaskCategory::class,
+        parentColumns = ["id"],
+        childColumns = ["category_id"],
+        onDelete = ForeignKey.RESTRICT
+    )]
 )
+data class Task(
+    @PrimaryKey(autoGenerate = true) val id: Int,
+    val name: String,
+    @ColumnInfo(name = "due_date") val dueDate: Date,
+    @ColumnInfo(name = "category_id", index = true) val categoryId: Int,
+    val completed: Boolean
+) {
+    @Ignore
+    lateinit var category: TaskCategory
+}
