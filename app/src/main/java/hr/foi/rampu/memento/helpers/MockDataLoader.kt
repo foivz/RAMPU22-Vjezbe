@@ -17,5 +17,9 @@ object MockDataLoader {
     }
 
     fun getDemoCategories(): List<TaskCategory> =
-        listOf(TaskCategory("RAMPU", "#000080"), TaskCategory("RPP", "#FF0000"), TaskCategory("RWA", "#CCCCCC"))
+        listOf(
+            TaskCategory(0, "RAMPU", "#000080"),
+            TaskCategory(1, "RPP", "#FF0000"),
+            TaskCategory(2, "RWA", "#CCCCCC")
+        )
 }
