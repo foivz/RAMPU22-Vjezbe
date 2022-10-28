@@ -12,6 +12,7 @@ import hr.foi.rampu.memento.database.TasksDatabase
 import hr.foi.rampu.memento.fragments.CompletedFragment
 import hr.foi.rampu.memento.fragments.NewsFragment
 import hr.foi.rampu.memento.fragments.PendingFragment
+import hr.foi.rampu.memento.helpers.MockDataLoader
 
 class MainActivity : AppCompatActivity() {
 
@@ -80,5 +81,6 @@ class MainActivity : AppCompatActivity() {
         })
 
         TasksDatabase.buildInstance(applicationContext)
+        MockDataLoader.loadMockData()
     }
 }
