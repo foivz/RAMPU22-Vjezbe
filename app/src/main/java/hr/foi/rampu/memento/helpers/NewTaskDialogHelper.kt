@@ -68,6 +68,6 @@ class NewTaskDialogHelper(private val view: View) {
         val spinnerCategory = view.findViewById<Spinner>(R.id.spn_new_task_dialog_category)
         val selectedCategory = spinnerCategory.selectedItem as TaskCategory
 
-        return Task(newTaskName, selectedDateTime.time, selectedCategory, false)
+        return Task(0, newTaskName, selectedDateTime.time, selectedCategory.id, false)
     }
 }
