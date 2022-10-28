@@ -2,6 +2,7 @@ package hr.foi.rampu.memento.entities
 
 import androidx.room.*
 import hr.foi.rampu.memento.converters.DateConverter
+import hr.foi.rampu.memento.database.TasksDatabase
 import java.util.*
 
 @Entity(
@@ -21,6 +22,8 @@ data class Task(
     @ColumnInfo(name = "category_id", index = true) val categoryId: Int,
     val completed: Boolean
 ) {
-    @Ignore
-    lateinit var category: TaskCategory
+    @delegate:Ignore
+    val category: TaskCategory by lazy {
+        TasksDatabase.getInstance().getTaskCategoriesDao().getCategoryById(categoryId)
+    }
 }
