@@ -14,7 +14,11 @@ import hr.foi.rampu.memento.entities.Task
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TasksAdapter(private val tasksList: MutableList<Task>) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+class TasksAdapter(
+    private val tasksList: MutableList<Task>,
+    private val onTaskCompleted: ((taskId: Int) -> Unit)? = null
+) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+
     inner class TaskViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val sdf: SimpleDateFormat = SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.ENGLISH)
 
@@ -40,12 +44,13 @@ class TasksAdapter(private val tasksList: MutableList<Task>) : RecyclerView.Adap
                         dialog.cancel()
                     }
 
-                if (!currentTask.completed) {
+                if (onTaskCompleted != null) {
                     alertDialogBuilder.setPositiveButton(view.context.getString(R.string.task_mark_as_completed)) { _, _ ->
                         val completedTask = tasksList[adapterPosition]
                         completedTask.completed = true
                         TasksDatabase.getInstance().getTasksDao().insertTask(completedTask)
                         removeTaskFromList()
+                        onTaskCompleted.invoke(completedTask.id)
                     }
                 }
 
