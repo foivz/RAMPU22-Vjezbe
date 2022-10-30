@@ -28,23 +28,29 @@ class TasksAdapter(private val tasksList: MutableList<Task>) : RecyclerView.Adap
             taskCategoryColor = view.findViewById(R.id.sv_task_category_color)
 
             view.setOnLongClickListener {
-                AlertDialog.Builder(view.context)
+                val currentTask = tasksList[adapterPosition]
+
+                val alertDialogBuilder = AlertDialog.Builder(view.context)
                     .setTitle(taskName.text)
                     .setNeutralButton(view.context.getString(R.string.delete_task)) { _, _ ->
-                        val deletedTask = tasksList[adapterPosition]
-                        TasksDatabase.getInstance().getTasksDao().removeTask(deletedTask)
-                        removeTaskFromList()
-                    }
-                    .setPositiveButton(view.context.getString(R.string.task_mark_as_completed)) { _, _ ->
-                        val completedTask = tasksList[adapterPosition]
-                        completedTask.completed = true
-                        TasksDatabase.getInstance().getTasksDao().insertTask(completedTask)
+                        TasksDatabase.getInstance().getTasksDao().removeTask(currentTask)
                         removeTaskFromList()
                     }
                     .setNegativeButton(view.context.getString(R.string.cancel)) { dialog, _ ->
                         dialog.cancel()
                     }
-                    .show()
+
+                if (!currentTask.completed) {
+                    alertDialogBuilder.setPositiveButton(view.context.getString(R.string.task_mark_as_completed)) { _, _ ->
+                        val completedTask = tasksList[adapterPosition]
+                        completedTask.completed = true
+                        TasksDatabase.getInstance().getTasksDao().insertTask(completedTask)
+                        removeTaskFromList()
+                    }
+                }
+
+                alertDialogBuilder.show()
+
                 return@setOnLongClickListener true
             }
         }
