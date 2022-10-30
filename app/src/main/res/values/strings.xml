@@ -8,4 +8,7 @@
     <string name="time">Time</string>
     <string name="category">Category</string>
     <string name="create_a_new_task">Create a new task</string>
+    <string name="delete_task">Delete task</string>
+    <string name="task_mark_as_completed">Mark as completed</string>
+    <string name="cancel">Cancel</string>
 </resources>

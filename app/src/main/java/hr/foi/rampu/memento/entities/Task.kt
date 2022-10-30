@@ -20,7 +20,7 @@ data class Task(
     val name: String,
     @ColumnInfo(name = "due_date") val dueDate: Date,
     @ColumnInfo(name = "category_id", index = true) val categoryId: Int,
-    val completed: Boolean
+    var completed: Boolean
 ) {
     @delegate:Ignore
     val category: TaskCategory by lazy {
