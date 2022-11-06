@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import hr.foi.rampu.memento.R
+import hr.foi.rampu.memento.ws.WsNews
 import hr.foi.rampu.memento.ws.WsNewsResult
 
 class NewsAdapter(private val newsList: List<WsNewsResult>) : RecyclerView.Adapter<NewsAdapter.NewsViewHolder>() {
@@ -28,6 +30,7 @@ class NewsAdapter(private val newsList: List<WsNewsResult>) : RecyclerView.Adapt
             title.text = newsItem.title
             contentText.text = newsItem.text
             dateTime.text = newsItem.date
+            Picasso.get().load(WsNews.BASE_URL + newsItem.imagePath).into(imageView)
         }
     }
 
