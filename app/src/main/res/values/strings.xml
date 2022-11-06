@@ -13,4 +13,5 @@
     <string name="cancel">Cancel</string>
     <string name="news_list_item_image_desc">This image describes a news article next to it</string>
     <string name="refresh_news_button_desc">Refresh news</string>
+    <string name="news_ws_err_msg">News are currently not available. Please, try again later.</string>
 </resources>
