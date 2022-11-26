@@ -15,7 +15,15 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            WearApp(emptyList<Task>())
+            WearApp(
+                listOf(
+                    Task(0, "Task1", "Category1"),
+                    Task(0, "Task2", "Category2"),
+                    Task(0, "Task3", "Category3"),
+                    Task(0, "Task4", "Category4"),
+                    Task(0, "Task5", "Category5")
+                )
+            )
         }
     }
 }
