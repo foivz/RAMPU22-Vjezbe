@@ -1,5 +1,6 @@
 package hr.foi.rampu.memento
 
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
         mainPagerAdapter.fragmentItems.withIndex().forEach { (index, fragmentItem) ->
             navView.menu
-                .add(fragmentItem.titleRes)
+                .add(0, index, index, fragmentItem.titleRes)
                 .setIcon(fragmentItem.iconRes)
                 .setCheckable(true)
                 .setChecked((index == 0))
@@ -78,6 +79,16 @@ class MainActivity : AppCompatActivity() {
                 }
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            navView.menu.setGroupDividerEnabled(true)
+        }
+
+        val newNavMenuIndex = mainPagerAdapter.fragmentItems.size
+        navView.menu
+            .add(1, newNavMenuIndex, newNavMenuIndex, "Sync Wear OS")
+            .setIcon(R.drawable.ic_baseline_watch_24)
+            .setOnMenuItemClickListener { syncTasks(); true }
+
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 navView.menu.getItem(position).isChecked = true
@@ -86,9 +97,16 @@ class MainActivity : AppCompatActivity() {
 
         TasksDatabase.buildInstance(applicationContext)
         MockDataLoader.loadMockData()
+        syncTasks()
+    }
 
+    private fun syncTasks() {
         WearableSynchronizer.sendTasks(
-            TasksDatabase.getInstance().getTasksDao().getAllTasks(false), dataClient
+            TasksDatabase
+                .getInstance()
+                .getTasksDao()
+                .getAllTasks(false),
+            dataClient
         )
     }
 }
