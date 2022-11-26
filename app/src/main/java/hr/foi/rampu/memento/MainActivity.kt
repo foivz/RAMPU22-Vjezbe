@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.wearable.Wearable
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -13,6 +14,7 @@ import hr.foi.rampu.memento.fragments.CompletedFragment
 import hr.foi.rampu.memento.fragments.NewsFragment
 import hr.foi.rampu.memento.fragments.PendingFragment
 import hr.foi.rampu.memento.helpers.MockDataLoader
+import hr.foi.rampu.memento.sync.WearableSynchronizer
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var viewPager2: ViewPager2
     lateinit var navDrawerLayout: DrawerLayout
     lateinit var navView: NavigationView
+
+    private val dataClient by lazy { Wearable.getDataClient(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,5 +86,9 @@ class MainActivity : AppCompatActivity() {
 
         TasksDatabase.buildInstance(applicationContext)
         MockDataLoader.loadMockData()
+
+        WearableSynchronizer.sendTasks(
+            TasksDatabase.getInstance().getTasksDao().getAllTasks(false), dataClient
+        )
     }
 }
