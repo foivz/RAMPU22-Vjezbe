@@ -1,7 +1,11 @@
 package hr.foi.rampu.memento
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager2.widget.ViewPager2
@@ -24,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var navDrawerLayout: DrawerLayout
     lateinit var navView: NavigationView
 
+    lateinit var onSharedPreferencesListener: OnSharedPreferenceChangeListener
     private val dataClient by lazy { Wearable.getDataClient(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,11 +88,18 @@ class MainActivity : AppCompatActivity() {
             navView.menu.setGroupDividerEnabled(true)
         }
 
-        val newNavMenuIndex = mainPagerAdapter.fragmentItems.size
+        var newNavMenuIndex = mainPagerAdapter.fragmentItems.size
         navView.menu
             .add(1, newNavMenuIndex, newNavMenuIndex, "Sync Wear OS")
             .setIcon(R.drawable.ic_baseline_watch_24)
             .setOnMenuItemClickListener { syncTasks(); true }
+
+        newNavMenuIndex++
+        val tasksCounterItem = navView.menu
+            .add(2, newNavMenuIndex, newNavMenuIndex, "")
+            .setEnabled(false)
+
+        attachMenuItemToTasksCreatedCount(tasksCounterItem)
 
         viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -98,6 +110,23 @@ class MainActivity : AppCompatActivity() {
         TasksDatabase.buildInstance(applicationContext)
         MockDataLoader.loadMockData()
         syncTasks()
+    }
+
+    private fun attachMenuItemToTasksCreatedCount(tasksCounterItem: MenuItem) {
+        val sharedPreferences = getSharedPreferences("tasks_preferences", Context.MODE_PRIVATE)
+        onSharedPreferencesListener =
+            OnSharedPreferenceChangeListener { _, key ->
+                if (key == "tasks_created_counter") {
+                    updateTasksCreatedCounter(tasksCounterItem, sharedPreferences)
+                }
+            }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(onSharedPreferencesListener)
+        updateTasksCreatedCounter(tasksCounterItem, sharedPreferences)
+    }
+
+    private fun updateTasksCreatedCounter(tasksCounterItem: MenuItem, sharedPreferences: SharedPreferences) {
+        val tasksCreated = sharedPreferences.getInt("tasks_created_counter", 0)
+        tasksCounterItem.title = "Tasks created: $tasksCreated"
     }
 
     private fun syncTasks() {
