@@ -1,6 +1,7 @@
 package hr.foi.rampu.memento.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -61,11 +62,20 @@ class PendingFragment : Fragment() {
                 newTask = tasksDao.getTask(newTaskId.toInt())
                 val tasksAdapter = (recyclerView.adapter as TasksAdapter)
                 tasksAdapter.addTask(newTask)
+
+                incrementTasksCreatedCounter()
             }
             .show()
 
         val categories = TasksDatabase.getInstance().getTaskCategoriesDao().getAllCategories()
         dialogHelper.populateSpinner(categories)
         dialogHelper.activateDateTimeListeners()
+    }
+
+    private fun incrementTasksCreatedCounter() {
+        context?.getSharedPreferences("tasks_preferences", Context.MODE_PRIVATE)?.apply {
+            val currentCount = getInt("tasks_created_counter", 0)
+            edit().putInt("tasks_created_counter", currentCount + 1).apply()
+        }
     }
 }
