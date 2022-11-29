@@ -7,6 +7,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.viewpager2.widget.ViewPager2
@@ -31,6 +32,13 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var onSharedPreferencesListener: OnSharedPreferenceChangeListener
     private val dataClient by lazy { Wearable.getDataClient(this) }
+
+    private val settingsLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_LANG_CHANGED) {
+                recreate()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,8 +115,7 @@ class MainActivity : AppCompatActivity() {
             .add(3, newNavMenuIndex, newNavMenuIndex, getString(R.string.settings_menu_item))
             .setIcon(R.drawable.ic_baseline_settings_24)
             .setOnMenuItemClickListener {
-                val intent = Intent(baseContext, PreferencesActivity::class.java)
-                startActivity(intent)
+                settingsLauncher.launch(Intent(this, PreferencesActivity::class.java))
                 navDrawerLayout.closeDrawers()
                 return@setOnMenuItemClickListener true
             }
