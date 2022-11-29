@@ -1,6 +1,7 @@
 package hr.foi.rampu.memento
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Build
@@ -106,7 +107,8 @@ class MainActivity : AppCompatActivity() {
             .add(3, newNavMenuIndex, newNavMenuIndex, getString(R.string.settings_menu_item))
             .setIcon(R.drawable.ic_baseline_settings_24)
             .setOnMenuItemClickListener {
-                TODO("Open settings")
+                val intent = Intent(baseContext, PreferencesActivity::class.java)
+                startActivity(intent)
                 navDrawerLayout.closeDrawers()
                 return@setOnMenuItemClickListener true
             }
