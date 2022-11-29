@@ -68,6 +68,7 @@ class PendingFragment : Fragment() {
             .show()
 
         val categories = TasksDatabase.getInstance().getTaskCategoriesDao().getAllCategories()
+        dialogHelper.setDefaultTaskName()
         dialogHelper.populateSpinner(categories)
         dialogHelper.activateDateTimeListeners()
     }
