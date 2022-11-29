@@ -10,6 +10,7 @@ import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.preference.PreferenceManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.wearable.Wearable
 import com.google.android.material.navigation.NavigationView
@@ -22,6 +23,7 @@ import hr.foi.rampu.memento.fragments.NewsFragment
 import hr.foi.rampu.memento.fragments.PendingFragment
 import hr.foi.rampu.memento.helpers.MockDataLoader
 import hr.foi.rampu.memento.sync.WearableSynchronizer
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,6 +45,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        applyUserSettings()
 
         tabLayout = findViewById(R.id.tabs)
         viewPager2 = findViewById(R.id.viewpager)
@@ -129,6 +133,22 @@ class MainActivity : AppCompatActivity() {
         TasksDatabase.buildInstance(applicationContext)
         MockDataLoader.loadMockData()
         syncTasks()
+    }
+
+    private fun applyUserSettings() {
+        PreferenceManager.getDefaultSharedPreferences(this)?.let { pref ->
+            PreferencesActivity.switchDarkMode(pref.getBoolean("preference_dark_mode", false))
+            val lang = pref.getString("preference_language", "EN")
+            if (lang != null) {
+                val locale = Locale(lang)
+                if (resources.configuration.locales[0].language != locale.language) {
+                    resources.configuration.setLocale(locale)
+                    Locale.setDefault(locale)
+                    createConfigurationContext(resources.configuration)
+                    recreate()
+                }
+            }
+        }
     }
 
     private fun attachMenuItemToTasksCreatedCount(tasksCounterItem: MenuItem) {

@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceManager.getDefaultSharedPreferences
 import hr.foi.rampu.memento.fragments.MementoSettingsFragment
-import java.util.*
 
 const val RESULT_LANG_CHANGED = AppCompatActivity.RESULT_FIRST_USER
 
@@ -28,28 +27,22 @@ class PreferencesActivity : AppCompatActivity(), SharedPreferences.OnSharedPrefe
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         when (key) {
             "preference_dark_mode" -> switchDarkMode(sharedPreferences?.getBoolean(key, false))
-            "preference_language" -> changeLanguage(sharedPreferences?.getString(key, "EN"))
+            "preference_language" -> notifyLanguageChangedAndClose()
         }
     }
 
-    private fun changeLanguage(lang: String?) {
-        if (lang != null) {
-            val locale = Locale(lang)
-            Locale.setDefault(locale)
-            resources.configuration.apply {
-                setLocale(locale)
-                createConfigurationContext(this)
+    private fun notifyLanguageChangedAndClose() {
+        setResult(RESULT_LANG_CHANGED)
+        finish()
+    }
+
+    companion object {
+        fun switchDarkMode(isDarkModeSelected: Boolean?) {
+            if (isDarkModeSelected == true) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             }
-            setResult(RESULT_LANG_CHANGED)
-            finish()
-        }
-    }
-
-    private fun switchDarkMode(isDarkModeSelected: Boolean?) {
-        if (isDarkModeSelected == true) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
 }
