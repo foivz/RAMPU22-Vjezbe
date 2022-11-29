@@ -15,4 +15,8 @@
     <string name="news_list_item_image_desc">Ova slika opisuje članak pored</string>
     <string name="refresh_news_button_desc">Osvježi vijesti</string>
     <string name="news_ws_err_msg">Vijesti trenutno nisu dostupne. Molimo, pokušajte kasnije.</string>
+    <string name="preferences_force_dark_mode">Koristi tamni način rada</string>
+    <string name="preferences_application_language">Jezik aplikacije</string>
+    <string name="preferences_template_task_name">Predložak naziva zadatka</string>
+    <string name="preferences_default_task_name_summary">Ovaj tekst automatski se unosi u prozoru za stvaranje zadataka.</string>
 </resources>

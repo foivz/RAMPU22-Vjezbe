@@ -14,4 +14,8 @@
     <string name="news_list_item_image_desc">This image describes a news article next to it</string>
     <string name="refresh_news_button_desc">Refresh news</string>
     <string name="news_ws_err_msg">News are currently not available. Please, try again later.</string>
+    <string name="preferences_force_dark_mode">Force dark mode</string>
+    <string name="preferences_application_language">Application language</string>
+    <string name="preferences_template_task_name">Template task name</string>
+    <string name="preferences_default_task_name_summary">This text is automatically entered in the task creation dialog.</string>
 </resources>
