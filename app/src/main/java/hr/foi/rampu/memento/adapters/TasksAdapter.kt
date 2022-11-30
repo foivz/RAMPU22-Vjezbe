@@ -6,11 +6,14 @@ import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.graphics.toColorInt
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import hr.foi.rampu.memento.R
 import hr.foi.rampu.memento.database.TasksDatabase
 import hr.foi.rampu.memento.entities.Task
+import hr.foi.rampu.memento.helpers.DeletedTaskRecovery
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,6 +40,17 @@ class TasksAdapter(
                 val alertDialogBuilder = AlertDialog.Builder(view.context)
                     .setTitle(taskName.text)
                     .setNeutralButton(view.context.getString(R.string.delete_task)) { _, _ ->
+                        DeletedTaskRecovery.pushTask(currentTask, view.context.cacheDir)
+                        val snack =
+                            Snackbar
+                                .make(view, "Revert?", Snackbar.LENGTH_LONG).setAction("Recover") { view ->
+                                    try {
+                                        DeletedTaskRecovery.popTask(view.context.cacheDir)
+                                    } catch (ex: Exception) {
+                                        Toast.makeText(view.context, ex.message, Toast.LENGTH_LONG).show()
+                                    }
+                                }
+                        snack.show()
                         TasksDatabase.getInstance().getTasksDao().removeTask(currentTask)
                         removeTaskFromList()
                     }
