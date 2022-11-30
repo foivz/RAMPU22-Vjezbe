@@ -41,17 +41,20 @@ class TasksAdapter(
                     .setTitle(taskName.text)
                     .setNeutralButton(view.context.getString(R.string.delete_task)) { _, _ ->
                         DeletedTaskRecovery.pushTask(currentTask, view.context.cacheDir)
+                        val tasksDao = TasksDatabase.getInstance().getTasksDao()
                         val snack =
                             Snackbar
                                 .make(view, "Revert?", Snackbar.LENGTH_LONG).setAction("Recover") { view ->
                                     try {
-                                        DeletedTaskRecovery.popTask(view.context.cacheDir)
+                                        val poppedTaskId = DeletedTaskRecovery.popTask(view.context.cacheDir)
+                                        val restoredTask = tasksDao.getTask(poppedTaskId)
+                                        addTask(restoredTask)
                                     } catch (ex: Exception) {
                                         Toast.makeText(view.context, ex.message, Toast.LENGTH_LONG).show()
                                     }
                                 }
                         snack.show()
-                        TasksDatabase.getInstance().getTasksDao().removeTask(currentTask)
+                        tasksDao.removeTask(currentTask)
                         removeTaskFromList()
                     }
                     .setNegativeButton(view.context.getString(R.string.cancel)) { dialog, _ ->

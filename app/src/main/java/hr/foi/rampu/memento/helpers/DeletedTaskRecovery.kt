@@ -49,6 +49,7 @@ object DeletedTaskRecovery {
         var result = RECOVERY_SUCCESS
 
         val fileCount = folder.listFiles()?.size
+        var restoredTaskId: Int = -1
 
         if (fileCount == 0) {
             result = RECOVERY_NO_TASKS
@@ -60,7 +61,7 @@ object DeletedTaskRecovery {
                     try {
                         val recoveredFile = readObject() as DeletedTask
                         val tasksDao = TasksDatabase.getInstance().getTasksDao()
-                        tasksDao.insertTask(
+                        restoredTaskId = tasksDao.insertTask(
                             Task(
                                 0,
                                 recoveredFile.name,
@@ -68,7 +69,7 @@ object DeletedTaskRecovery {
                                 recoveredFile.categoryId,
                                 recoveredFile.wasCompleted
                             )
-                        )
+                        )[0].toInt()
                     } catch (ex: IOException) {
                         ex.printStackTrace()
                         result = RECOVERY_COULD_NOT_READ
@@ -79,7 +80,7 @@ object DeletedTaskRecovery {
             }
         }
 
-        if (result != RECOVERY_SUCCESS) {
+        if (result != RECOVERY_SUCCESS || restoredTaskId == -1) {
             val msg = when (result) {
                 RECOVERY_NO_TASKS -> "No tasks found!"
                 RECOVERY_COULD_NOT_READ -> "Corrupt cache! Consider cleaning app's cache."
@@ -88,7 +89,7 @@ object DeletedTaskRecovery {
             throw Exception(msg)
         }
 
-        return result
+        return restoredTaskId
     }
 
     class DeletedTask(task: Task) : Serializable {
