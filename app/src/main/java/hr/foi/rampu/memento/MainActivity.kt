@@ -46,7 +46,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        applyUserSettings()
+        if (!applyUserSettings()) {
+            return
+        }
 
         tabLayout = findViewById(R.id.tabs)
         viewPager2 = findViewById(R.id.viewpager)
@@ -135,7 +137,7 @@ class MainActivity : AppCompatActivity() {
         syncTasks()
     }
 
-    private fun applyUserSettings() {
+    private fun applyUserSettings(): Boolean {
         PreferenceManager.getDefaultSharedPreferences(this)?.let { pref ->
             PreferencesActivity.switchDarkMode(pref.getBoolean("preference_dark_mode", false))
             val lang = pref.getString("preference_language", "EN")
@@ -146,9 +148,11 @@ class MainActivity : AppCompatActivity() {
                     Locale.setDefault(locale)
                     createConfigurationContext(resources.configuration)
                     recreate()
+                    return false
                 }
             }
         }
+        return true
     }
 
     private fun attachMenuItemToTasksCreatedCount(tasksCounterItem: MenuItem) {
