@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "106329168616",
+    "project_id": "memento22-af296",
+    "storage_bucket": "memento22-af296.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106329168616:android:9ad3fd425b113f370c475d",
+        "android_client_info": {
+          "package_name": "hr.foi.rampu.memento"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106329168616-srk437hl8upranvaovjp093dk70lde57.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9osX3OOLIYkIb-NwhRmOmYhivxAmcPK4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106329168616-srk437hl8upranvaovjp093dk70lde57.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
