@@ -21,7 +21,6 @@ import hr.foi.rampu.memento.database.TasksDatabase
 import hr.foi.rampu.memento.fragments.CompletedFragment
 import hr.foi.rampu.memento.fragments.NewsFragment
 import hr.foi.rampu.memento.fragments.PendingFragment
-import hr.foi.rampu.memento.helpers.MockDataLoader
 import hr.foi.rampu.memento.sync.WearableSynchronizer
 import java.util.*
 
@@ -50,60 +49,96 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        tabLayout = findViewById(R.id.tabs)
-        viewPager2 = findViewById(R.id.viewpager)
-        navDrawerLayout = findViewById(R.id.drawer_layout)
-        navView = findViewById(R.id.nav_view)
+        loadViews()
 
-        val mainPagerAdapter = MainPagerAdapter(supportFragmentManager, lifecycle)
-
-        mainPagerAdapter.addFragment(
-            MainPagerAdapter.FragmentItem(
-                R.string.tasks_pending,
-                R.drawable.ic_baseline_assignment_late_24,
-                PendingFragment::class
-            )
-        )
-        mainPagerAdapter.addFragment(
-            MainPagerAdapter.FragmentItem(
-                R.string.tasks_completed,
-                R.drawable.ic_baseline_assignment_turned_in_24,
-                CompletedFragment::class
-            )
-        )
-        mainPagerAdapter.addFragment(
-            MainPagerAdapter.FragmentItem(
-                R.string.news,
-                R.drawable.ic_baseline_wysiwyg_24,
-                NewsFragment::class
-            )
-        )
-
-        viewPager2.adapter = mainPagerAdapter
-
-        TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-            tab.setText(mainPagerAdapter.fragmentItems[position].titleRes)
-            tab.setIcon(mainPagerAdapter.fragmentItems[position].iconRes)
-        }.attach()
-
-        mainPagerAdapter.fragmentItems.withIndex().forEach { (index, fragmentItem) ->
-            navView.menu
-                .add(0, index, index, fragmentItem.titleRes)
-                .setIcon(fragmentItem.iconRes)
-                .setCheckable(true)
-                .setChecked((index == 0))
-                .setOnMenuItemClickListener {
-                    viewPager2.setCurrentItem(index, true)
-                    navDrawerLayout.closeDrawers()
-                    return@setOnMenuItemClickListener true
-                }
-        }
+        val numberOfAddedFragments = addAllFragments()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             navView.menu.setGroupDividerEnabled(true)
         }
 
-        var newNavMenuIndex = mainPagerAdapter.fragmentItems.size
+        addNavMenuItems(numberOfAddedFragments)
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                navView.menu.getItem(position).isChecked = true
+            }
+        })
+
+        TasksDatabase.buildInstance(applicationContext)
+        //MockDataLoader.loadMockData()
+        syncTasks()
+    }
+
+    private fun applyUserSettings(): Boolean {
+        PreferenceManager.getDefaultSharedPreferences(this)?.let { pref ->
+            PreferencesActivity.switchDarkMode(pref.getBoolean("preference_dark_mode", false))
+            val lang = pref.getString("preference_language", "EN")
+            if (lang != null) {
+                val locale = Locale(lang)
+                if (resources.configuration.locales[0].language != locale.language) {
+                    resources.configuration.setLocale(locale)
+                    Locale.setDefault(locale)
+                    createConfigurationContext(resources.configuration)
+                    recreate()
+                    return false
+                }
+            }
+        }
+        return true
+    }
+
+    private fun addAllFragments(): Int {
+        MainPagerAdapter(supportFragmentManager, lifecycle).apply {
+            addFragment(
+                MainPagerAdapter.FragmentItem(
+                    R.string.tasks_pending,
+                    R.drawable.ic_baseline_assignment_late_24,
+                    PendingFragment::class
+                )
+            )
+            addFragment(
+                MainPagerAdapter.FragmentItem(
+                    R.string.tasks_completed,
+                    R.drawable.ic_baseline_assignment_turned_in_24,
+                    CompletedFragment::class
+                )
+            )
+            addFragment(
+                MainPagerAdapter.FragmentItem(
+                    R.string.news,
+                    R.drawable.ic_baseline_wysiwyg_24,
+                    NewsFragment::class
+                )
+            )
+
+            viewPager2.adapter = this
+
+            TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
+                tab.setText(fragmentItems[position].titleRes)
+                tab.setIcon(fragmentItems[position].iconRes)
+            }.attach()
+
+            fragmentItems.withIndex().forEach { (index, fragmentItem) ->
+                navView.menu
+                    .add(0, index, index, fragmentItem.titleRes)
+                    .setIcon(fragmentItem.iconRes)
+                    .setCheckable(true)
+                    .setChecked((index == 0))
+                    .setOnMenuItemClickListener {
+                        viewPager2.setCurrentItem(index, true)
+                        navDrawerLayout.closeDrawers()
+                        return@setOnMenuItemClickListener true
+                    }
+            }
+
+            return fragmentItems.size
+        }
+    }
+
+    private fun addNavMenuItems(numberOfAddedFragments: Int) {
+        var newNavMenuIndex = numberOfAddedFragments
+
         navView.menu
             .add(1, newNavMenuIndex, newNavMenuIndex, "Sync Wear OS")
             .setIcon(R.drawable.ic_baseline_watch_24)
@@ -125,34 +160,13 @@ class MainActivity : AppCompatActivity() {
                 navDrawerLayout.closeDrawers()
                 return@setOnMenuItemClickListener true
             }
-
-        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                navView.menu.getItem(position).isChecked = true
-            }
-        })
-
-        TasksDatabase.buildInstance(applicationContext)
-        MockDataLoader.loadMockData()
-        syncTasks()
     }
 
-    private fun applyUserSettings(): Boolean {
-        PreferenceManager.getDefaultSharedPreferences(this)?.let { pref ->
-            PreferencesActivity.switchDarkMode(pref.getBoolean("preference_dark_mode", false))
-            val lang = pref.getString("preference_language", "EN")
-            if (lang != null) {
-                val locale = Locale(lang)
-                if (resources.configuration.locales[0].language != locale.language) {
-                    resources.configuration.setLocale(locale)
-                    Locale.setDefault(locale)
-                    createConfigurationContext(resources.configuration)
-                    recreate()
-                    return false
-                }
-            }
-        }
-        return true
+    private fun loadViews() {
+        tabLayout = findViewById(R.id.tabs)
+        viewPager2 = findViewById(R.id.viewpager)
+        navDrawerLayout = findViewById(R.id.drawer_layout)
+        navView = findViewById(R.id.nav_view)
     }
 
     private fun attachMenuItemToTasksCreatedCount(tasksCounterItem: MenuItem) {
