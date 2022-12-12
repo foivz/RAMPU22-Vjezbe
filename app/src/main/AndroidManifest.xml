@@ -21,6 +21,14 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Memento"
             tools:targetApi="31">
+        <activity
+                android:name=".NewsActivity"
+                android:exported="false">
+            <meta-data
+                    android:name="android.app.lib_name"
+                    android:value="" />
+        </activity>
+
         <service
                 android:name=".services.FCMService"
                 android:enabled="true"
