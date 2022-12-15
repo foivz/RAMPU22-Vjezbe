@@ -23,4 +23,11 @@
             app:icon="@drawable/ic_baseline_drive_file_rename_outline_24"
             app:dialogIcon="@drawable/ic_baseline_assignment_late_24"
             app:summary="@string/preferences_default_task_name_summary" />
+    <MultiSelectListPreference
+            android:key="preference_subscribed_categories"
+            android:title="Choose category"
+            android:entries="@array/topics"
+            android:entryValues="@array/topics"
+            app:icon="@drawable/ic_baseline_edit_notifications_24"
+            app:dialogIcon="@drawable/ic_baseline_edit_notifications_24" />
 </PreferenceScreen>
